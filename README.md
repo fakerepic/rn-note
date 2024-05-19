@@ -20,17 +20,25 @@ Notes app built with react native, currently available for both ios and android.
   ```bash
   yarn
   ```
-- dev
+- dev with expo go
 
   ```bash
   yarn start
   yarn start --clear -c # clear cache
   ```
 
-- build android release apk
+  For more details, see instructions in the terminal.
+
+- build android apk (within dev client) and install
 
   ```bash
-  yarn build
+  yarn android
+  ```
+
+- build android apk (release ) and install
+
+  ```bash
+  yarn android:release
   ```
 
 - generate pocketbase types
@@ -40,4 +48,5 @@ Notes app built with react native, currently available for both ios and android.
 
 ## notice
 
+- It is recommended to use physical devices for testing, as the app may not work properly in the simulator.
 - Make sure `EXPO_PUBLIC_PB_URL` is set correctly in `.env`
