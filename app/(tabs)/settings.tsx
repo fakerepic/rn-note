@@ -12,12 +12,12 @@ import {
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 
-import pb, { logout, useSession } from "../../pb";
+import pb, { logout, useAuthRefresh, useUserModel } from "../../pb";
 import { useMemo, useRef, useState } from "react";
 import { RefreshControl } from "react-native";
 
 export default function TabTwoScreen() {
-  const { refetch, isLoading } = useSession();
+  const { refetch, isLoading } = useAuthRefresh();
   return (
     <ScrollView
       bg="$background"
@@ -49,9 +49,9 @@ export default function TabTwoScreen() {
   );
 }
 
-function AvatarPicker() {
-  const { userModel, refetch } = useSession();
 
+function AvatarPicker() {
+  const userModel = useUserModel();
   const avatarUrl = useMemo(
     () => pb.files.getUrl(userModel as any, userModel?.avatar as string),
     [userModel],
@@ -77,7 +77,6 @@ function AvatarPicker() {
     } as any);
     try {
       await pb.collection("users").update(pb.authStore.model?.id, updateData);
-      refetch();
     } catch (e) {
       console.log("e", JSON.stringify(e, null, 2));
     }
@@ -92,29 +91,26 @@ function AvatarPicker() {
 }
 
 function NameEditor() {
-  const { userModel, refetch, isLoading, error } = useSession();
-  const [name, setName] = useState(userModel?.name);
-  const [editable, setEditable] = useState(false);
+  const userModel = useUserModel();
+  const [name, setName] = useState<string>("");
   const inputRef = useRef<Input>(null);
 
   const updateName = async () => {
-    if (!editable) {
-      setEditable(true);
+    if (!name) {
+      setName(userModel.name);
       inputRef.current?.focus();
       return;
-    }
-    if (userModel?.id) {
-      await pb.from("users").update(userModel.id, { name: name });
-      await refetch();
-      setEditable(false);
+    } else {
+      await pb.from("users").update(userModel?.id, { name: name });
+      setName("");
     }
   };
 
   return (
     <XStack gap="$2" ai="center" h="$4" jc="space-between">
-      {editable ? (
+      {name ? (
         <Input
-          color={error ? "$red6" : "$color12"}
+          editable={name !== ""}
           ref={inputRef}
           borderWidth={0}
           value={name}
@@ -132,9 +128,9 @@ function NameEditor() {
         size="$3"
         onPress={updateName}
         icon={
-          editable ? (
+          name !== "" ? (
             <MaterialIcons name="done" size={16} />
-          ) : isLoading ? null : (
+          ) : (
             <MaterialIcons name="edit" size={16} />
           )
         }

@@ -1,31 +1,21 @@
-import type { OnStoreChangeFunc } from 'pocketbase'
-import React, { useState, useEffect } from 'react'
-import { Provider } from 'use-pouchdb'
+import React, { useMemo } from "react";
+import { Provider } from "use-pouchdb";
 
-import pouchdbExpoSqlite from './pouchdb-expo-sqlite'
-import pb from '../pb'
+import pouchdbExpoSqlite from "./pouchdb-expo-sqlite";
+import { useAuthStore } from "../zustand/authStore";
 
 function openLocalPouchDB(name?: string) {
-  return new pouchdbExpoSqlite(name || 'local', {
-    adapter: 'react-native-sqlite',
-    auto_compaction: true
-  })
+  return new pouchdbExpoSqlite(name || "local", {
+    adapter: "react-native-sqlite",
+    auto_compaction: true,
+  });
 }
 
 export default function AutoPouchProvider(props: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  const [db, setDB] = useState(() => openLocalPouchDB(pb.authStore.model?.id))
+  const id = useAuthStore((state) => state.model?.id as string);
+  const db = useMemo(() => openLocalPouchDB(id), [id]);
 
-  useEffect(() => {
-    const callback: OnStoreChangeFunc = (_, model) => {
-      setDB(openLocalPouchDB(model?.id))
-    }
-    const unsubscribe = pb.authStore.onChange(callback)
-    return () => {
-      unsubscribe()
-    }
-  }, [])
-
-  return <Provider pouchdb={db}>{props.children}</Provider>
+  return <Provider pouchdb={db}>{props.children}</Provider>;
 }
