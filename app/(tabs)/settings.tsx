@@ -8,13 +8,21 @@ import {
   ScrollView,
   Input,
   XStack,
+  Label,
+  Theme,
 } from "tamagui";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 
 import pb, { logout, useAuthRefresh, useUserModel } from "../../pb";
 import { useMemo, useRef, useState } from "react";
-import { RefreshControl } from "react-native";
+import { RefreshControl, useColorScheme } from "react-native";
+import { FlatList } from "react-native";
+import {
+  AvailableSystemColors,
+  AvailableTamaguiColors,
+  useColorStore,
+} from "../../zustand/color";
 
 export default function TabTwoScreen() {
   const { refetch, isLoading } = useAuthRefresh();
@@ -32,11 +40,12 @@ export default function TabTwoScreen() {
           <NameEditor />
           <Text fos="$2">{pb.authStore.model?.email}</Text>
         </View>
-        <H4 mt="$4">Setting Group Test</H4>
-        <ListItem br="$4">Moon</ListItem>
-        <ListItem br="$4">Sun</ListItem>
+        <H4 mt="$4">Appearance</H4>
+        <Label>Theme Color</Label>
+        <TamaguiColorSwitcher />
+        <Label>System Color</Label>
+        <SystemColorSwitcher />
         <H4 mt="$4">App Control</H4>
-        <ListItem br="$4" title="Dummy test" />
         <ListItem
           br="$4"
           theme="red"
@@ -49,6 +58,67 @@ export default function TabTwoScreen() {
   );
 }
 
+function SystemColorSwitcher() {
+  const setTheme = useColorStore((s) => s.setSystemColor);
+  const systemColor = useColorStore((s) => s.systemColor);
+  const color = useColorScheme();
+  const inverse = (c: any) => {
+    if (c === "system") {
+      return systemColor !== c && color !== systemColor;
+    } else {
+      if (systemColor === "system") return c !== color;
+      else return c !== systemColor;
+    }
+  };
+  return (
+    <FlatList
+      data={AvailableSystemColors}
+      horizontal
+      renderItem={({ item }) => {
+        return (
+          <ListItem
+            br="$8"
+            w="auto"
+            h="$4"
+            mx="$2"
+            themeInverse={inverse(item)}
+            bc={item === systemColor ? "$color8" : "$background"}
+            borderWidth={1}
+            title={item}
+            onPress={() => setTheme(item)}
+          />
+        );
+      }}
+    />
+  );
+}
+
+function TamaguiColorSwitcher() {
+  const setTheme = useColorStore((s) => s.setTamaguiColor);
+  const tamaguiColor = useColorStore((s) => s.tamaguiColor);
+  return (
+    <FlatList
+      data={AvailableTamaguiColors}
+      horizontal
+      renderItem={({ item }) => {
+        return (
+          <Theme name={item}>
+            <ListItem
+              circular
+              h="$4"
+              w="$4"
+              mx="$1"
+              bg="$color4"
+              bc={item === tamaguiColor ? "$color8" : "$background"}
+              borderWidth={1}
+              onPress={() => setTheme(item)}
+            />
+          </Theme>
+        );
+      }}
+    />
+  );
+}
 
 function AvatarPicker() {
   const userModel = useUserModel();

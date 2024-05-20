@@ -13,6 +13,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 import PouchProvider from "../pouchdbs/provider";
 import { useNavigationTheme } from "../themes/useNavigationTheme";
+import { useColorStore } from "../zustand/color";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -78,8 +79,13 @@ function RootLayoutNav() {
 
 function CustomTamaguiProvider({ children }: { children: any }) {
   const colorScheme = useColorScheme();
+  const systemColor = useColorStore((s) => s.systemColor);
+  const tamaguiColor = useColorStore((s) => s.tamaguiColor);
   return (
-    <TamaguiProvider config={config} defaultTheme={`${colorScheme}_blue`}>
+    <TamaguiProvider
+      config={config}
+      defaultTheme={`${systemColor === "system" ? colorScheme : systemColor}_${tamaguiColor}`}
+    >
       {children}
     </TamaguiProvider>
   );
