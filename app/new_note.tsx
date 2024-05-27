@@ -4,13 +4,13 @@ import { Stack, router } from "expo-router";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { MaterialIcons } from "@expo/vector-icons";
 
-import { UUID, tiptapExtractTitle } from "../utils/docUtil";
+import { save_or_create } from "../utils/docUtil";
 import Editor, { useThemedEditorInstance } from "../components/editor";
 import { usePlatte } from "../themes/usePlatte";
 import { TouchableOpacity } from "react-native";
 
 export default function ModalScreen() {
-  const pouch = usePouch();
+  const pouch = usePouch<any>();
 
   const { $text } = usePlatte();
 
@@ -19,17 +19,7 @@ export default function ModalScreen() {
     autoFocus: true,
   });
 
-  const createNote = () =>
-    editor
-      .getJSON()
-      .then((obj) => {
-        pouch.put({
-          _id: UUID(),
-          title: tiptapExtractTitle(obj),
-          content: obj,
-        });
-      })
-      .catch(console.error);
+  const createNote = () => save_or_create(pouch, editor);
 
   return (
     <View f={1} jc="center" bg="$background">
@@ -51,7 +41,7 @@ export default function ModalScreen() {
         style={{ flex: 1 }}
         entering={FadeInDown.springify().duration(1000).delay(500)}
       >
-        <Editor editor={editor} saveAction={createNote} />
+        <Editor editor={editor} />
       </Animated.View>
     </View>
   );

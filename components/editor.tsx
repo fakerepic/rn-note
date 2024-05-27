@@ -19,7 +19,6 @@ import { useTheme } from "tamagui";
 
 type EditorProps = {
   editor: EditorBridge;
-  saveAction: () => Promise<void>;
 };
 
 export default function Editor(props: EditorProps) {
@@ -130,7 +129,8 @@ export function useThemedEditorInstance(props: ThemeEditorProps = {}) {
 
   useEffect(() => {
     editor.injectCSS(DynamicEditorCss, CoreBridge.name);
-  }, [DynamicEditorCss, editor]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [DynamicEditorCss]);
 
   return editor;
 }

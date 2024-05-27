@@ -1,20 +1,19 @@
 import { View } from "tamagui";
 import { useDoc, usePouch } from "use-pouchdb";
-import { useLocalSearchParams, Stack } from "expo-router";
-import { useCallback, useEffect } from "react";
+import { useLocalSearchParams, Stack, useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import Editor, { useThemedEditorInstance } from "../components/editor";
-import type { JSONContent } from "@tiptap/core";
 import { EditorBridge } from "@10play/tentap-editor";
 import Animated, { FadeInDown } from "react-native-reanimated";
-import { tiptapExtractTitle } from "../utils/docUtil";
 import { MaterialIcons } from "@expo/vector-icons";
 import { usePlatte } from "../themes/usePlatte";
 import { router } from "expo-router";
 import { useNavigation } from "expo-router";
 import { TouchableOpacity } from "react-native";
+import { save_or_create } from "../utils/docUtil";
 
 export default function ModalScreen() {
-  const pouch = usePouch();
+  const pouch = usePouch<any>();
 
   const { $text } = usePlatte();
 
@@ -25,32 +24,19 @@ export default function ModalScreen() {
   const editor = useThemedEditorInstance();
 
   const save = useCallback(async () => {
-    try {
-      const res = (await editor.getJSON()) as JSONContent;
-      const record = await pouch.get(docID);
-      await pouch.put({
-        _id: record._id,
-        _rev: record._rev,
-        title: tiptapExtractTitle(res),
-        content: res,
-      });
-    } catch (e) {
-      console.error(e);
-    }
+    await save_or_create(pouch, editor, docID);
   }, [docID, editor, pouch]);
 
   useEditerInitEffect(editor, doc?.content);
 
   const navigation = useNavigation();
-  useEffect(
-    () =>
-      navigation.addListener("beforeRemove", (e) => {
-        e.preventDefault();
-        save()
-          .catch(console.error)
-          .finally(() => navigation.dispatch(e.data.action));
-      }),
-    [navigation, save],
+  useFocusEffect(() =>
+    navigation.addListener("beforeRemove", (e) => {
+      e.preventDefault();
+      save()
+        .catch(console.error)
+        .finally(() => navigation.dispatch(e.data.action));
+    }),
   );
 
   return (
@@ -69,24 +55,24 @@ export default function ModalScreen() {
         style={{ flex: 1 }}
         entering={FadeInDown.springify().duration(1000).delay(500)}
       >
-        <Editor editor={editor} saveAction={save} />
+        <Editor editor={editor} />
       </Animated.View>
     </View>
   );
 }
 
 function useEditerInitEffect(editor: EditorBridge, content: any) {
-  // const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(false);
   useEffect(() => {
     const unsubscribe = editor._subscribeToEditorStateUpdate((state) => {
-      if (state.isReady && content) {
+      if (!ready && state.isReady && content) {
         editor.setContent(content);
-        // setReady(true);
+        setReady(true);
         unsubscribe();
       }
     });
     return () => {
       unsubscribe();
     };
-  }, [editor, content]);
+  }, [editor, content, ready]);
 }
