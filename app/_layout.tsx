@@ -14,6 +14,8 @@ import React from "react";
 import PouchProvider from "../pouchdbs/provider";
 import { useNavigationTheme } from "../themes/useNavigationTheme";
 import { useColorStore } from "../zustand/color";
+import { SimpleHeader } from "../components/simpleHeader";
+import { SearchHeader } from "../components/searchHeader";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -70,9 +72,19 @@ function RootLayoutNav() {
       <Stack.Screen name="unlogged" options={{ headerShown: false }} />
       <Stack.Screen
         name="edit"
-        options={{ headerShown: true, gestureEnabled: false }}
+        options={{
+          headerShown: true,
+          gestureEnabled: false,
+          header: () => <SimpleHeader />,
+        }}
       />
       <Stack.Screen name="new_note" options={{ presentation: "formSheet" }} />
+      <Stack.Screen
+        name="search"
+        options={{
+          header: () => <SearchHeader />,
+        }}
+      />
     </Stack>
   );
 }

@@ -15,7 +15,7 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 
 import pb, { logout, useAuthRefresh, useUserModel } from "../../pb";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { RefreshControl, useColorScheme } from "react-native";
 import { FlatList } from "react-native";
 import {
@@ -162,43 +162,41 @@ function AvatarPicker() {
 
 function NameEditor() {
   const userModel = useUserModel();
-  const [name, setName] = useState<string>("");
-  const inputRef = useRef<Input>(null);
+  const [name, setName] = useState<string>();
+  const [editable, setEditable] = useState<boolean>(false);
 
   const updateName = async () => {
-    if (!name) {
+    if (!editable) {
       setName(userModel.name);
-      inputRef.current?.focus();
+      setEditable(true);
       return;
     } else {
       await pb.from("users").update(userModel?.id, { name: name });
-      setName("");
+      setEditable(false);
     }
   };
 
+  useEffect(() => setName(userModel.name), [userModel]);
+
   return (
     <XStack gap="$2" ai="center" h="$4" jc="space-between">
-      {name ? (
-        <Input
-          editable={name !== ""}
-          ref={inputRef}
-          borderWidth={0}
-          value={name}
-          autoFocus
-          maxLength={20}
-          onChangeText={setName}
-        ></Input>
-      ) : (
-        <Text fos="$4">
-          {userModel?.name || <Text color="$color6">Set your name</Text>}
-        </Text>
-      )}
+      <Input
+        bg={editable ? "$background" : "$colorTransparent"}
+        editable={editable}
+        autoFocus
+        minWidth="$2"
+        bw={editable ? 1 : 0}
+        value={name}
+        maxLength={20}
+        onChangeText={setName}
+        placeholder="Set your name"
+      ></Input>
       <Button
         circular
         size="$3"
         onPress={updateName}
         icon={
-          name !== "" ? (
+          editable ? (
             <MaterialIcons name="done" size={16} />
           ) : (
             <MaterialIcons name="edit" size={16} />

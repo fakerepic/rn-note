@@ -1,9 +1,9 @@
-import { Link, Redirect, Tabs } from "expo-router";
-import { TouchableOpacity } from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Redirect, Tabs } from "expo-router";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useSession } from "../../pb";
 import { usePlatte } from "../../themes/usePlatte";
 import { elevationHiddenStyle } from "../../utils/elevationHiddenStyle";
+import HomeHeader from "../../components/homeHeader";
 
 export default function TabLayout() {
   const { loggedIn, verified } = useSession();
@@ -17,6 +17,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: $activecolor,
+        tabBarLabel: () => null,
         tabBarStyle: {
           ...elevationHiddenStyle,
           borderTopWidth: 0,
@@ -37,15 +38,9 @@ export default function TabLayout() {
           title: "Home",
           headerTitle: "",
           tabBarIcon: ({ color }) => (
-            <Ionicons name="home-sharp" size={32} color={color} />
+            <MaterialIcons name="home-filled" size={32} color={color} />
           ),
-          headerRight: () => (
-            <Link href="/new_note" asChild>
-              <TouchableOpacity style={{ marginRight: 12 }}>
-                <Ionicons name="add" size={32} color={$activecolor} />
-              </TouchableOpacity>
-            </Link>
-          ),
+          header: (props) => <HomeHeader {...props} />,
         }}
       />
       <Tabs.Screen
@@ -53,7 +48,7 @@ export default function TabLayout() {
         options={{
           title: "Settings",
           tabBarIcon: ({ color }) => (
-            <Ionicons name="settings-sharp" size={32} color={color} />
+            <MaterialIcons name="settings" size={32} color={color} />
           ),
         }}
       />

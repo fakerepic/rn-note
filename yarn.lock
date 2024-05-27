@@ -5600,6 +5600,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash@npm:^4":
+  version: 4.17.4
+  resolution: "@types/lodash@npm:4.17.4"
+  checksum: 3ec19f9fc48200006e71733e08bcb1478b0398673657fcfb21a8643d41a80bcce09a01000077c3b23a3c6d86b9b314abe0672a8fdfc0fd66b893bd41955cfab8
+  languageName: node
+  linkType: hard
+
 "@types/ms@npm:*":
   version: 0.7.34
   resolution: "@types/ms@npm:0.7.34"
@@ -11249,7 +11256,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.17.13, lodash@npm:^4.17.21, lodash@npm:^4.17.4":
+"lodash@npm:4.17.21, lodash@npm:^4.17.13, lodash@npm:^4.17.21, lodash@npm:^4.17.4":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: c08619c038846ea6ac754abd6dd29d2568aa705feb69339e836dfa8d8b09abbb2f859371e86863eda41848221f9af43714491467b5b0299122431e202bb0c532
@@ -12756,6 +12763,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pouchdb-abstract-mapreduce@npm:8.0.1":
+  version: 8.0.1
+  resolution: "pouchdb-abstract-mapreduce@npm:8.0.1"
+  dependencies:
+    pouchdb-binary-utils: "npm:8.0.1"
+    pouchdb-collate: "npm:8.0.1"
+    pouchdb-collections: "npm:8.0.1"
+    pouchdb-errors: "npm:8.0.1"
+    pouchdb-fetch: "npm:8.0.1"
+    pouchdb-mapreduce-utils: "npm:8.0.1"
+    pouchdb-md5: "npm:8.0.1"
+    pouchdb-utils: "npm:8.0.1"
+  checksum: 08b7fbeaea53132f5a93267a4d6d35d8f6d710530fa95b3cf60a63c2037afa7c5adfce1c5d3bbeba4601bc437698cc9163064d0ff247e60dbc5bb8a5d3db32e0
+  languageName: node
+  linkType: hard
+
 "pouchdb-adapter-http@npm:^8.0.1":
   version: 8.0.1
   resolution: "pouchdb-adapter-http@npm:8.0.1"
@@ -12932,6 +12955,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pouchdb-find@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "pouchdb-find@npm:8.0.1"
+  dependencies:
+    pouchdb-abstract-mapreduce: "npm:8.0.1"
+    pouchdb-collate: "npm:8.0.1"
+    pouchdb-errors: "npm:8.0.1"
+    pouchdb-fetch: "npm:8.0.1"
+    pouchdb-md5: "npm:8.0.1"
+    pouchdb-selector-core: "npm:8.0.1"
+    pouchdb-utils: "npm:8.0.1"
+  checksum: 019d3efeeb2592ed3e755c1b140c98f76806d079743da7415e0abb0fd5e97f44bd27d4d6e1c0c90efad102d0e43acee7725ac7fe4f3dd9f41a9bf5c880cd77f6
+  languageName: node
+  linkType: hard
+
 "pouchdb-generate-replication-id@npm:8.0.1":
   version: 8.0.1
   resolution: "pouchdb-generate-replication-id@npm:8.0.1"
@@ -12948,6 +12986,16 @@ __metadata:
   dependencies:
     vuvuzela: "npm:1.0.3"
   checksum: b3818c43b9445e7c9e76f00abbaefb9ec5fe80c051ba91c993137859ed4657703287f45a3defd17d26527f617e1be3888aa4fe5606a7605e99d40d940fa0514e
+  languageName: node
+  linkType: hard
+
+"pouchdb-mapreduce-utils@npm:8.0.1":
+  version: 8.0.1
+  resolution: "pouchdb-mapreduce-utils@npm:8.0.1"
+  dependencies:
+    pouchdb-collections: "npm:8.0.1"
+    pouchdb-utils: "npm:8.0.1"
+  checksum: 780437463a3b084d3911589c3fd00b7e4f4096a3530f31e9873d6f71af56857f134545b758db54a94dea4c746b49bf06280ac3d8e6cca8e3647386df658e3a3a
   languageName: node
   linkType: hard
 
@@ -15264,6 +15312,7 @@ __metadata:
     "@tanstack/react-query": "npm:^5.28.6"
     "@types/eslint": "npm:^8"
     "@types/events": "npm:^3"
+    "@types/lodash": "npm:^4"
     "@types/pouchdb": "npm:^6.4.2"
     "@types/react": "npm:~18.2.14"
     "@types/react-native-get-random-values": "npm:^1"
@@ -15286,12 +15335,14 @@ __metadata:
     expo-status-bar: "npm:~1.11.1"
     expo-system-ui: "npm:~2.9.3"
     expo-web-browser: "npm:~12.8.2"
+    lodash: "npm:4.17.21"
     pocketbase: "npm:^0.21.1"
     pouchdb-adapter-http: "npm:^8.0.1"
     pouchdb-adapter-utils: "npm:^8.0.1"
     pouchdb-adapter-websql-core: "npm:^7.0.0"
     pouchdb-browser: "npm:^8.0.1"
     pouchdb-core: "npm:^8.0.1"
+    pouchdb-find: "npm:^8.0.1"
     pouchdb-replication: "npm:^8.0.1"
     prettier: "npm:^3.2.5"
     react: "npm:^18.2.0"

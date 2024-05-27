@@ -1,15 +1,17 @@
 import React from "react";
 import { FlatList } from "react-native";
 import type { CardProps } from "tamagui";
-import { Button, Card, H2, Paragraph, View, XStack } from "tamagui";
+import { Button, Card, H6, View, XStack } from "tamagui";
 import { useAllDocs } from "use-pouchdb";
 import { usePouchDelete, usePouchSync } from "../../pouchdbs/custom-hooks";
-import { Link } from "expo-router";
 import Animated, { FadeIn } from "react-native-reanimated";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
+import IoniIcons from "@expo/vector-icons/Ionicons";
 
 export default function CardDemo() {
-  const { rows } = useAllDocs<{ title: string }>({ include_docs: true });
+  const { rows } = useAllDocs<{ title: string; type: string }>({
+    include_docs: true,
+  });
   const deleteAction = usePouchDelete();
   usePouchSync();
   return (
@@ -17,6 +19,7 @@ export default function CardDemo() {
       <FlatList
         data={rows}
         renderItem={({ item, index }) => {
+          if (item.doc?.type !== "note") return null;
           return (
             <Animated.View entering={FadeIn.delay(30 * index)}>
               <View py="$2" px="$4" gap="$4">
@@ -33,7 +36,21 @@ export default function CardDemo() {
             </Animated.View>
           );
         }}
-      ></FlatList>
+      />
+      <Link asChild href="/new_note">
+        <Button
+          theme="active"
+          w="$6"
+          h="$6"
+          br="$12"
+          bottom="$4"
+          right="$6"
+          pos="absolute"
+          elevate
+          elevation={4}
+          icon={<IoniIcons name="add" size={24} />}
+        />
+      </Link>
     </View>
   );
 }
@@ -48,14 +65,10 @@ export function DemoCard(
 ) {
   return (
     <Card size="$4" bordered {...props}>
-      <Card.Header padded>
-        <H2 selectable={false}>{props.title || "Untitled"}</H2>
-        <Paragraph theme="alt2" selectable={false}>
-          ID: {props._id}
-        </Paragraph>
-      </Card.Header>
       <Card.Footer padded>
-        <XStack flex={1} gap="$4"></XStack>
+        <XStack flex={1} gap="$4">
+          <H6 selectable={false}>{props.title || "Untitled"}</H6>
+        </XStack>
         <XStack flex={1} gap="$4">
           <Button
             onPress={() =>
