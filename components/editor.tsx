@@ -17,6 +17,9 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "tamagui";
 
+import { editorHtml } from "../tentap/editor-web/build/editorHtml";
+import { DynamicMyImageCSS, MyImageBridge } from "../tentap/myImageBridge";
+import { UtilBridge } from "../tentap/utilBridge";
 type EditorProps = {
   editor: EditorBridge;
 };
@@ -65,7 +68,8 @@ export function useThemedEditorInstance(props: ThemeEditorProps = {}) {
   const { bottom } = useSafeAreaInsets();
 
   const DynamicEditorCss = useMemo(
-    () => `
+    () =>
+      `
   * {
     background-color: ${$background};
     color: ${$text};
@@ -75,19 +79,24 @@ export function useThemedEditorInstance(props: ThemeEditorProps = {}) {
   }
   .tiptap {
     margin-left: 15px;
-    margin-right: 3px;
+    margin-right: 15px;
   }
   blockquote {
     border-left: 3px solid ${$quote};
     padding-left: 1rem;
   }
-`,
-    [$background, $cursor, $quote, $text],
+` + DynamicMyImageCSS({ $quote }),
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [colorScheme, theme],
   );
 
   const editor = useEditorBridge({
+    customSource: editorHtml,
     bridgeExtensions: [
       ...TenTapStartKit,
+      MyImageBridge,
+      UtilBridge,
       CoreBridge.configureCSS(DynamicEditorCss).extendExtension({
         content: "heading block+",
       }),
@@ -128,7 +137,9 @@ export function useThemedEditorInstance(props: ThemeEditorProps = {}) {
   });
 
   useEffect(() => {
-    editor.injectCSS(DynamicEditorCss, CoreBridge.name);
+    if (editor.getEditorState().isReady) {
+      editor.injectCSS(DynamicEditorCss, CoreBridge.name);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [DynamicEditorCss]);
 
