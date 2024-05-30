@@ -1,6 +1,5 @@
 import {
   RichText,
-  Toolbar,
   useEditorBridge,
   EditorBridge,
   darkEditorTheme,
@@ -20,11 +19,17 @@ import { useTheme } from "tamagui";
 import { editorHtml } from "../tentap/editor-web/build/editorHtml";
 import { DynamicMyImageCSS, MyImageBridge } from "../tentap/myImageBridge";
 import { UtilBridge } from "../tentap/utilBridge";
+import { Toolbar, DEFAULT_TOOLBAR_ITEMS, customToolbars } from "./toolbar";
+
 type EditorProps = {
   editor: EditorBridge;
 };
 
 export default function Editor(props: EditorProps) {
+  const toolbaritems = useMemo(
+    () => customToolbars.concat(DEFAULT_TOOLBAR_ITEMS),
+    [],
+  );
   return (
     <SafeAreaView style={{ flex: 1, height: 300 }}>
       <RichText
@@ -46,7 +51,7 @@ export default function Editor(props: EditorProps) {
           bottom: 0,
         }}
       >
-        <Toolbar editor={props.editor} hidden={false} />
+        <Toolbar items={toolbaritems} editor={props.editor} hidden={false} />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

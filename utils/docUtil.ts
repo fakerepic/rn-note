@@ -26,6 +26,9 @@ export const save_or_create = async (
   docID?: string,
 ) => {
   try {
+    // Manually make images in the doc logical tree "close" before saving
+    editor.setMyImageShown(false);
+
     const res = await editor.getJSON();
     const text = await editor.getText();
     if (docID) {

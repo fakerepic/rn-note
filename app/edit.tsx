@@ -11,6 +11,8 @@ import { router } from "expo-router";
 import { useNavigation } from "expo-router";
 import { TouchableOpacity } from "react-native";
 import { save_or_create } from "../utils/docUtil";
+import { load_image_from_fs } from "../utils/images";
+import { useSubscriptionEffect } from "../zustand/editor";
 
 export default function ModalScreen() {
   const pouch = usePouch<any>();
@@ -22,6 +24,7 @@ export default function ModalScreen() {
   const { doc } = useDoc<{ title: string; content: any }>(docID);
 
   const editor = useThemedEditorInstance();
+  useSubscriptionEffect(editor, docID);
 
   const save = useCallback(async () => {
     await save_or_create(pouch, editor, docID);
@@ -63,10 +66,17 @@ export default function ModalScreen() {
 
 function useEditerInitEffect(editor: EditorBridge, content: any) {
   const [ready, setReady] = useState(false);
+
+  const init = useCallback(async () => {
+    editor.initContent(content);
+    const ids = await editor.getMyImageIDs();
+    await load_image_from_fs(editor, ids);
+  }, [content, editor]);
+
   useEffect(() => {
     const unsubscribe = editor._subscribeToEditorStateUpdate((state) => {
       if (!ready && state.isReady && content) {
-        editor.setContent(content);
+        init();
         setReady(true);
         unsubscribe();
       }
@@ -74,5 +84,5 @@ function useEditerInitEffect(editor: EditorBridge, content: any) {
     return () => {
       unsubscribe();
     };
-  }, [editor, content, ready]);
+  }, [editor, content, ready, init]);
 }

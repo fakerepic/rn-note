@@ -9,12 +9,13 @@ import { config } from "../tamagui.config";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
 
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 import PouchProvider from "../pouchdbs/provider";
 import { useNavigationTheme } from "../themes/useNavigationTheme";
 import { useColorStore } from "../zustand/color";
-import { SimpleHeader } from "../components/simpleHeader";
+import { EditorHeader } from "../components/editorHeader";
 import { SearchHeader } from "../components/searchHeader";
 
 export {
@@ -54,7 +55,9 @@ export default function RootLayout() {
       <CustomTamaguiProvider>
         <CustomThemeProvider>
           <PouchProvider>
-            <RootLayoutNav />
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <RootLayoutNav />
+            </GestureHandlerRootView>
           </PouchProvider>
         </CustomThemeProvider>
       </CustomTamaguiProvider>
@@ -75,14 +78,27 @@ function RootLayoutNav() {
         options={{
           headerShown: true,
           gestureEnabled: false,
-          header: () => <SimpleHeader />,
+          header: () => <EditorHeader />,
         }}
       />
-      <Stack.Screen name="new_note" options={{ presentation: "formSheet" }} />
+      <Stack.Screen
+        name="new_note"
+        options={{
+          header: () => <EditorHeader newNote />,
+        }}
+      />
       <Stack.Screen
         name="search"
         options={{
           header: () => <SearchHeader />,
+        }}
+      />
+      <Stack.Screen
+        name="bottom_sheets"
+        options={{
+          headerShown: false,
+          presentation: "transparentModal",
+          animation: "none",
         }}
       />
     </Stack>
