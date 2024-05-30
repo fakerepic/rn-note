@@ -1,41 +1,28 @@
 import React from "react";
-import { FlatList } from "react-native";
 import type { CardProps } from "tamagui";
 import { Button, Card, H6, View, XStack } from "tamagui";
-import { useAllDocs } from "use-pouchdb";
-import { usePouchDelete, usePouchSync } from "../../pouchdbs/custom-hooks";
+import {
+  useNoteEntries,
+  usePouchDelete,
+  usePouchSync,
+} from "../../pouchdbs/custom-hooks";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { Link, router } from "expo-router";
 import IoniIcons from "@expo/vector-icons/Ionicons";
+import { FlashList } from "@shopify/flash-list";
 
 export default function CardDemo() {
-  const { rows } = useAllDocs<{ title: string; type: string }>({
-    include_docs: true,
-  });
+  const { docs } = useNoteEntries();
   const deleteAction = usePouchDelete();
   usePouchSync();
   return (
     <View f={1} jc="center" bg="$background">
-      <FlatList
-        data={rows}
-        renderItem={({ item, index }) => {
-          if (item.doc?.type !== "note") return null;
-          return (
-            <Animated.View entering={FadeIn.delay(30 * index)}>
-              <View py="$2" px="$4" gap="$4">
-                <DemoCard
-                  _id={item.id}
-                  animation="bouncy"
-                  size="$4"
-                  hoverStyle={{ scale: 0.98 }}
-                  pressStyle={{ scale: 0.97 }}
-                  deleteAction={() => deleteAction(item.id)}
-                  title={item.doc?.title}
-                ></DemoCard>
-              </View>
-            </Animated.View>
-          );
-        }}
+      <FlashList
+        data={docs}
+        estimatedItemSize={96}
+        renderItem={({ item, index }) =>
+          RenderItem({ item, index, deleteAction })
+        }
       />
       <Link asChild href="/new_note">
         <Button
@@ -54,6 +41,32 @@ export default function CardDemo() {
     </View>
   );
 }
+
+const RenderItem = ({
+  item,
+  index,
+  deleteAction,
+}: {
+  item: ReturnType<typeof useNoteEntries>["docs"][0];
+  index: number;
+  deleteAction: (id: string) => void;
+}) => {
+  return (
+    <Animated.View entering={FadeIn.delay(30 * index)}>
+      <View py="$2" px="$4" gap="$4">
+        <DemoCard
+          _id={item._id}
+          animation="bouncy"
+          size="$4"
+          hoverStyle={{ scale: 0.98 }}
+          pressStyle={{ scale: 0.97 }}
+          deleteAction={() => deleteAction(item._id)}
+          title={item.title}
+        ></DemoCard>
+      </View>
+    </Animated.View>
+  );
+};
 
 export function DemoCard(
   props: CardProps & {

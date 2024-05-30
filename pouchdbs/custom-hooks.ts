@@ -1,39 +1,52 @@
-import { useCallback, useEffect } from 'react'
-import { usePouch } from 'use-pouchdb'
+import { useCallback, useEffect } from "react";
+import { useFind, usePouch } from "use-pouchdb";
 
-import { remotedb } from '.'
+import { remotedb } from ".";
 
 export function usePouchSync(shouldDisable?: boolean) {
-  const localDb = usePouch()
+  const localDb = usePouch();
 
   useEffect(() => {
     if (!shouldDisable) {
       const syncHandler = localDb.sync(remotedb, {
         live: true,
         retry: true,
-      })
+      });
 
       return () => {
-        syncHandler.cancel()
-      }
+        syncHandler.cancel();
+      };
     }
-  }, [localDb, shouldDisable])
+  }, [localDb, shouldDisable]);
 }
 
 export function usePouchDelete(errorCallback?: (e: any) => void) {
-  const db = usePouch()
+  const db = usePouch();
 
   return useCallback(
     async (id: string) => {
       try {
-        const doc = await db.get(id)
-        await db.remove(doc)
+        const doc = await db.get(id);
+        await db.remove(doc);
       } catch (error) {
         if (errorCallback) {
-          errorCallback(error)
+          errorCallback(error);
         }
       }
     },
     [db, errorCallback],
-  )
+  );
+}
+
+export function useNoteEntries() {
+  return useFind<{ title: string }>({
+    index: {
+      fields: ["_id", "type"],
+    },
+    selector: {
+      _id: { $gt: null },
+      type: "note",
+    },
+    fields: ["_id", "title"],
+  });
 }
