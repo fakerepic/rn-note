@@ -10,9 +10,11 @@ export default function SearchDemo() {
   const searchKey = useSearchStore((state) => state.searchKey);
   const { docs } = useFind<{ title: string }>({
     index: {
-      fields: ["text"],
+      fields: ["_id", "type"],
     },
     selector: {
+      _id: { $gt: null },
+      type: "note",
       text: { $regex: searchKey ? searchKey : undefined },
     },
     fields: ["_id", "title"],
