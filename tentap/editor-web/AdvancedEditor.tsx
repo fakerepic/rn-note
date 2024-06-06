@@ -1,4 +1,4 @@
-import { useTenTap, TenTapStartKit, CoreBridge } from "@10play/tentap-editor";
+import { useTenTap, TenTapStartKit } from "@10play/tentap-editor";
 import { EditorContent } from "@tiptap/react";
 import React from "react";
 
@@ -15,9 +15,6 @@ export const AdvancedEditor = () => {
       ...TenTapStartKit,
       MyImageBridge,
       UtilBridge,
-      CoreBridge.extendExtension({
-        content: "heading block+",
-      }),
     ],
     tiptapOptions: {
       extensions: [MyImage],

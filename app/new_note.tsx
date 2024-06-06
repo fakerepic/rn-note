@@ -7,7 +7,6 @@ import { useSubscriptionEffect } from "../zustand/editor";
 
 export default function ModalScreen() {
   const editor = useThemedEditorInstance({
-    initialContent: "Untitled",
     autoFocus: true,
   });
   useSubscriptionEffect(editor);

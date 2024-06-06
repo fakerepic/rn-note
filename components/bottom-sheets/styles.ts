@@ -6,4 +6,8 @@ export default StyleSheet.create({
     paddingBottom: 32,
     gap: 12,
   },
+  sheetViewNoGap: {
+    paddingHorizontal: 16,
+    paddingBottom: 32,
+  },
 });

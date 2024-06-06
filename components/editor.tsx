@@ -5,6 +5,7 @@ import {
   darkEditorTheme,
   TenTapStartKit,
   CoreBridge,
+  PlaceholderBridge,
 } from "@10play/tentap-editor";
 import { useEffect, useMemo } from "react";
 import {
@@ -14,7 +15,7 @@ import {
   useColorScheme,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useTheme } from "tamagui";
+import { View, useTheme } from "tamagui";
 
 import { editorHtml } from "../tentap/editor-web/build/editorHtml";
 import { DynamicMyImageCSS, MyImageBridge } from "../tentap/myImageBridge";
@@ -30,10 +31,13 @@ export default function Editor(props: EditorProps) {
     () => customToolbars.concat(DEFAULT_TOOLBAR_ITEMS),
     [],
   );
+
+  const { top } = useSafeAreaInsets();
   return (
     <SafeAreaView style={{ flex: 1, height: 300 }}>
       <RichText
         setBuiltInZoomControls={false}
+        setDisplayZoomControls={false}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         nestedScrollEnabled={false}
@@ -42,8 +46,11 @@ export default function Editor(props: EditorProps) {
         onError={console.error}
         editor={props.editor}
       />
+      {/* make sure all the text is visible */}
+      <View h={Platform.OS === "ios" ? "unset" : "$4"} />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? top + 36 : 0}
         style={{
           position: "absolute",
           width: "100%",
@@ -83,8 +90,8 @@ export function useThemedEditorInstance(props: ThemeEditorProps = {}) {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
   .tiptap {
-    margin-left: 15px;
-    margin-right: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
   }
   blockquote {
     border-left: 3px solid ${$quote};
@@ -102,8 +109,12 @@ export function useThemedEditorInstance(props: ThemeEditorProps = {}) {
       ...TenTapStartKit,
       MyImageBridge,
       UtilBridge,
+      PlaceholderBridge.configureExtension({
+        showOnlyCurrent: false,
+        placeholder: "Add a title...",
+      }),
       CoreBridge.configureCSS(DynamicEditorCss).extendExtension({
-        content: "heading block+",
+        content: "heading block*",
       }),
     ],
     initialContent: props.initialContent,

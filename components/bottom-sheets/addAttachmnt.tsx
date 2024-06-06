@@ -9,6 +9,7 @@ import { useCurrentBridge } from "../../zustand/editor";
 import { test_insert_attachment } from "../../utils/images";
 import { usePlatte } from "../../themes/usePlatte";
 import { InteractionManager } from "react-native";
+import { BottomSheetsRef } from "./ref";
 
 export const AddAttachmentSheet = (props: {}) => {
   const editor = useCurrentBridge();
@@ -63,7 +64,7 @@ const CustomListItem = (props: {
       icon={() => props.icon({ color: $text, size: 16 })}
       title={props.title}
       onPress={() => {
-        router.back();
+        BottomSheetsRef.current?.dismiss();
         InteractionManager.runAfterInteractions(async () => {
           if (props.onPress) {
             await props.onPress();

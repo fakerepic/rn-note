@@ -38,15 +38,32 @@ export function usePouchDelete(errorCallback?: (e: any) => void) {
   );
 }
 
-export function useNoteEntries() {
-  return useFind<{ title: string }>({
+export function useNoteEntries(notebookID? :string) {
+  return useFind<{ title: string, updateAt: number, createAt:number }>({
     index: {
       fields: ["_id", "type"],
+      ddoc: "main-index",
     },
     selector: {
       _id: { $gt: null },
       type: "note",
+      notebookID: notebookID,
     },
-    fields: ["_id", "title"],
+    fields: ["_id", "title", "updateAt", "creteAt"],
   });
+}
+
+export function useNoteBooks() {
+  return useFind<{ title: string; createAt: number }>({
+    index: {
+      fields: ["_id", "type"],
+      ddoc: "main-index",
+    },
+    selector: {
+      _id: { $gt: null },
+      type: "notebook",
+    },
+    fields: ["_id", "title", "createAt"],
+  });
+
 }
