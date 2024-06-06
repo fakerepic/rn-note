@@ -3883,6 +3883,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-navigation/drawer@npm:^6.6.15":
+  version: 6.6.15
+  resolution: "@react-navigation/drawer@npm:6.6.15"
+  dependencies:
+    "@react-navigation/elements": "npm:^1.3.30"
+    color: "npm:^4.2.3"
+    warn-once: "npm:^0.1.0"
+  peerDependencies:
+    "@react-navigation/native": ^6.0.0
+    react: "*"
+    react-native: "*"
+    react-native-gesture-handler: ">= 1.0.0"
+    react-native-reanimated: ">= 1.0.0"
+    react-native-safe-area-context: ">= 3.0.0"
+    react-native-screens: ">= 3.0.0"
+  checksum: c34486a7ee7e5b930033e70c5f76fb855bdb19b2b54d95086969487dd17f0349a9d514d6f3f0f91510e03a06a3742cb77efa0d3b1316f9b36dc27ec736bda8c7
+  languageName: node
+  linkType: hard
+
 "@react-navigation/elements@npm:^1.3.21":
   version: 1.3.21
   resolution: "@react-navigation/elements@npm:1.3.21"
@@ -3892,6 +3911,18 @@ __metadata:
     react-native: "*"
     react-native-safe-area-context: ">= 3.0.0"
   checksum: 84a8ecfe9bbaf4a59a310edf99effbe5639a664fcdb1c821caf5382b1b18a206191f084b2975e35fe7c393e0223bb454a16622c688633766928472dd7e216a95
+  languageName: node
+  linkType: hard
+
+"@react-navigation/elements@npm:^1.3.30":
+  version: 1.3.30
+  resolution: "@react-navigation/elements@npm:1.3.30"
+  peerDependencies:
+    "@react-navigation/native": ^6.0.0
+    react: "*"
+    react-native: "*"
+    react-native-safe-area-context: ">= 3.0.0"
+  checksum: caf0321ed2a632aa63473e18d05020228bba81bb39a6e4076fdd17fec2597bcad8cb8d6d7483653ecb465d007e4733c683995ca59144ee908db9a21cb47b13da
   languageName: node
   linkType: hard
 
@@ -9473,6 +9504,15 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 455cc312dcdd831aff4133b183eb9c1af2e4ebc253d71573039fc9f9c1c84c257dd5f8968afe230569bd856cacf7052bc08fd57d361b18ff7b4925048b0a3e28
+  languageName: node
+  linkType: hard
+
+"expo-linear-gradient@npm:~12.7.2":
+  version: 12.7.2
+  resolution: "expo-linear-gradient@npm:12.7.2"
+  peerDependencies:
+    expo: "*"
+  checksum: 74fc7449bc3400add8cb40173cf5f8010aa239d086a2d43031197c76a380905d126671db7d8efc332cb1e73f806e937156383092798bfb08c09e1191e606fa06
   languageName: node
   linkType: hard
 
@@ -16217,6 +16257,7 @@ __metadata:
     "@fakerepic/typed-pocketbase": "fakerepic/typed-pocketbase#remove_pnpm"
     "@gorhom/bottom-sheet": "npm:^4"
     "@react-native-async-storage/async-storage": "npm:1.21.0"
+    "@react-navigation/drawer": "npm:^6.6.15"
     "@react-navigation/native": "npm:^6.0.2"
     "@shopify/flash-list": "npm:1.6.3"
     "@tamagui/config": "npm:^1.92.1"
@@ -16241,6 +16282,7 @@ __metadata:
     expo-crypto: "npm:~12.8.1"
     expo-font: "npm:~11.10.2"
     expo-image-picker: "npm:~14.7.1"
+    expo-linear-gradient: "npm:~12.7.2"
     expo-linking: "npm:~6.2.1"
     expo-router: "npm:~3.4.7"
     expo-splash-screen: "npm:~0.26.4"

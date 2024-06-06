@@ -5,9 +5,13 @@ import {
   BottomSheetModal,
 } from "@gorhom/bottom-sheet";
 import { useCallback, useEffect, useRef } from "react";
+import { BottomSheetsRef } from "./ref";
 import { usePlatte } from "../../themes/usePlatte";
 import { NoteDetailSheet } from "./noteDetail";
 import { AddAttachmentSheet } from "./addAttachmnt";
+import { MoveToNotebookSheet } from "./moveToNotebook";
+import { NotebookDetailSheet } from "./notebookDetail";
+import { NewNotebookSheet } from "./newNotebook";
 import {
   router,
   useFocusEffect,
@@ -19,13 +23,17 @@ import { InteractionManager, Keyboard } from "react-native";
 const SheetMap = {
   addAttachmnt: (p: any) => <AddAttachmentSheet {...p} />,
   noteDetail: (p: any) => <NoteDetailSheet {...p} />,
+  noteDetailAllowDel: (_: any) => <NoteDetailSheet allowDelete />,
+  moveNote: (p: any) => <MoveToNotebookSheet {...p} />,
+  notebookDetail: (p: string) => <NotebookDetailSheet notebookID={p} />,
+  newNotebook: (p: any) => <NewNotebookSheet {...p} />,
 };
 
 export class SheetGroup {
   static open(name: keyof typeof SheetMap, sheetProps?: any) {
     Keyboard.dismiss();
     InteractionManager.runAfterInteractions(() => {
-      router.push({
+      router.navigate({
         pathname: "/bottom_sheets",
         params: { sheetname: name, sheetprops: sheetProps },
       });
@@ -45,7 +53,7 @@ export function BottomSheetGroup() {
     sheetprops: any;
   }>();
 
-  const ref = useRef<BottomSheetModal>(null);
+  const ref = BottomSheetsRef;
   useEffect(() => {
     if (ref.current) {
       ref.current.present();

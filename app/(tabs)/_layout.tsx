@@ -1,57 +1,79 @@
-import { Redirect, Tabs } from "expo-router";
+import { Redirect } from "expo-router";
+import { Drawer } from "expo-router/drawer";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useSession } from "../../pb";
+import { useSession, useUserModel } from "../../pb";
 import { usePlatte } from "../../themes/usePlatte";
 import { elevationHiddenStyle } from "../../utils/elevationHiddenStyle";
-import HomeHeader from "../../components/homeHeader";
+import { Link } from "expo-router";
+import { View } from "tamagui";
+import { DrawerToggleButton } from "@react-navigation/drawer";
+import DrawerComponent from "../../components/drawer";
+import { usePouchSync } from "../../pouchdbs/custom-hooks";
 
 export default function TabLayout() {
   const { loggedIn, verified } = useSession();
-  const { $background, $activecolor } = usePlatte();
+  const { $background, $toolbar, $text } = usePlatte();
+  const { name } = useUserModel();
+
+  usePouchSync();
 
   if (!loggedIn || !verified) {
     return <Redirect href={"/unlogged"} />;
   }
 
   return (
-    <Tabs
+    <Drawer
+      drawerContent={(props) => <DrawerComponent {...props} />}
       screenOptions={{
-        tabBarActiveTintColor: $activecolor,
-        tabBarLabel: () => null,
-        tabBarStyle: {
-          ...elevationHiddenStyle,
-          borderTopWidth: 0,
-          backgroundColor: $background,
-          borderTopColor: $background,
-          paddingBottom: 8,
-          minHeight: 70,
-        },
         headerStyle: {
           ...elevationHiddenStyle,
           backgroundColor: $background,
         },
+        headerTintColor: $text,
+        headerLeftContainerStyle: {
+          marginLeft: 16,
+        },
+        headerLeft: (props) => (
+          <View ml="$1">
+            <DrawerToggleButton tintColor={props.tintColor} />
+          </View>
+        ),
       }}
     >
-      <Tabs.Screen
+      <Drawer.Screen
         name="index"
         options={{
-          title: "Home",
-          headerTitle: "",
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name="home-filled" size={32} color={color} />
+          title: "Notes",
+          headerTitle: `${name}'s notes`,
+          headerStyle: {
+            ...elevationHiddenStyle,
+            backgroundColor: $toolbar,
+          },
+          drawerIcon: (props) => (
+            <MaterialIcons name="library-books" size={24} color={props.color} />
           ),
-          header: (props) => <HomeHeader {...props} />,
+          headerRight: (props) => (
+            <Link href={"/search"} asChild>
+              <View mr="$3">
+                <MaterialIcons
+                  name="search"
+                  size={24}
+                  color={props.tintColor}
+                />
+              </View>
+            </Link>
+          ),
         }}
       />
-      <Tabs.Screen
+      <Drawer.Screen
         name="settings"
         options={{
           title: "Settings",
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name="settings" size={32} color={color} />
+          drawerIcon: (props) => (
+            <MaterialIcons name="settings" size={24} color={props.color} />
           ),
         }}
       />
-    </Tabs>
+    </Drawer>
   );
 }

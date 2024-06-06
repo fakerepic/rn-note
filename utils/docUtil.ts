@@ -21,9 +21,13 @@ export const save_or_create = async (
     content: any;
     text: string;
     type: string;
+    updateAt: number;
+    createAt: number;
+    notebookID?: string;
   }>,
   editor: EditorBridge,
   docID?: string,
+  notebookID?: string,
 ) => {
   try {
     // Manually make images in the doc logical tree "close" before saving
@@ -37,12 +41,12 @@ export const save_or_create = async (
       const diff = !isEqual(record.content, res);
       if (diff) {
         pouch.put({
-          _id: record._id,
-          _rev: record._rev,
+          ...record,
           title: tiptapExtractTitle(res),
           text: text,
           content: res,
           type: "note",
+          updateAt: Date.now(),
         });
         console.debug("save");
       }
@@ -53,6 +57,9 @@ export const save_or_create = async (
         text: text,
         content: res,
         type: "note",
+        createAt: Date.now(),
+        updateAt: Date.now(),
+        notebookID,
       });
       console.debug("create");
     }
@@ -60,3 +67,69 @@ export const save_or_create = async (
     console.error(e);
   }
 };
+
+export async function newNote(
+  pouch: PouchDB.Database<any>,
+  notebookID?: string,
+) {
+  const _id = UUID();
+  const now = Date.now();
+  await pouch.put({
+    _id,
+    type: "note",
+    createAt: now,
+    updateAt: now,
+    notebookID,
+  });
+  return _id;
+}
+
+export async function addNoteBook(pouch: PouchDB.Database<any>, title: string) {
+  const now = Date.now();
+  return pouch.put({
+    _id: `notebook:${title}`,
+    title,
+    type: "notebook",
+    createAt: now,
+    updateAt: now,
+  });
+}
+
+export async function moveNoteToNotebook(
+  pouch: PouchDB.Database<any>,
+  noteID: string,
+  notebookID: string | null,
+) {
+  return pouch.get(noteID).then((doc) => {
+    pouch.put({
+      ...doc,
+      notebookID,
+    });
+  });
+}
+
+export async function deleteNoteBook(
+  pouch: PouchDB.Database<any>,
+  notebookID: string,
+  deleteNotes = false,
+) {
+  const notes = await pouch.find({
+    use_index: "main-index",
+    selector: {
+      _id: { $gt: null },
+      type: "note",
+      notebookID: notebookID,
+    },
+  });
+  if (deleteNotes) {
+    notes.docs.forEach((note) => pouch.remove(note));
+  } else {
+    notes.docs.forEach((note) => {
+      pouch.put({
+        ...note,
+        notebookID: null,
+      });
+    });
+  }
+  return pouch.remove(await pouch.get(notebookID));
+}
