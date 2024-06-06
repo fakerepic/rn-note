@@ -163,14 +163,13 @@ export default function CardDemo() {
               data={sortedDocs}
               numColumns={2}
               showsVerticalScrollIndicator={false}
-              estimatedItemSize={138}
+              estimatedItemSize={105}
               keyExtractor={(item) => item._id}
               ref={list}
               renderItem={({ item, index }) => {
                 return (
                   <>
                     {RenderItem({ item, index })}
-                    {index === sortedDocs.length - 1 && <View h="$12" />}
                   </>
                 );
               }}

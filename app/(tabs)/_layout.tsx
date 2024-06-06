@@ -9,11 +9,13 @@ import { View } from "tamagui";
 import { DrawerToggleButton } from "@react-navigation/drawer";
 import DrawerComponent from "../../components/drawer";
 import { usePouchSync } from "../../pouchdbs/custom-hooks";
+import { useWindowDimensions } from "react-native";
 
 export default function TabLayout() {
   const { loggedIn, verified } = useSession();
   const { $background, $toolbar, $text } = usePlatte();
   const { name } = useUserModel();
+  const dimensions = useWindowDimensions()
 
   usePouchSync();
 
@@ -25,6 +27,8 @@ export default function TabLayout() {
     <Drawer
       drawerContent={(props) => <DrawerComponent {...props} />}
       screenOptions={{
+        drawerType: dimensions.width >= 768 ? "permanent" : "front",
+        drawerStyle: { width: 240 },
         headerStyle: {
           ...elevationHiddenStyle,
           backgroundColor: $background,

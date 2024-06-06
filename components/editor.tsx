@@ -50,7 +50,7 @@ export default function Editor(props: EditorProps) {
       <View h={Platform.OS === "ios" ? "unset" : "$4"} />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? top + 36 : 0}
+        keyboardVerticalOffset={Platform.OS === "ios" ? top + 45 : 0}
         style={{
           position: "absolute",
           width: "100%",
