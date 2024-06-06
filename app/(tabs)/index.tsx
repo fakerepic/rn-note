@@ -167,11 +167,7 @@ export default function CardDemo() {
               keyExtractor={(item) => item._id}
               ref={list}
               renderItem={({ item, index }) => {
-                return (
-                  <>
-                    {RenderItem({ item, index })}
-                  </>
-                );
+                return <>{RenderItem({ item, index })}</>;
               }}
             />
           ) : (
@@ -191,32 +187,32 @@ export default function CardDemo() {
               }}
             />
           )}
-          <Link
-            asChild
-            href={{
-              pathname: "/new_note",
-              params: ctxNotebookID
-                ? {
-                    ctxNotebookID,
-                  }
-                : undefined,
-            }}
-          >
-            <Button
-              w="$6"
-              h="$6"
-              br="$12"
-              bw={0}
-              bottom="$4"
-              right="$6"
-              pos="absolute"
-              elevate
-              elevation={4}
-              icon={<IoniIcons name="add" size={24} />}
-            />
-          </Link>
         </View>
       )}
+      <Link
+        asChild
+        href={{
+          pathname: "/new_note",
+          params: ctxNotebookID
+            ? {
+                ctxNotebookID,
+              }
+            : undefined,
+        }}
+      >
+        <Button
+          w="$6"
+          h="$6"
+          br="$12"
+          bw={0}
+          bottom="$4"
+          right="$6"
+          pos="absolute"
+          elevate
+          elevation={4}
+          icon={<IoniIcons name="add" size={24} />}
+        />
+      </Link>
     </View>
   );
 }
