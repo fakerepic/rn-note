@@ -1,6 +1,9 @@
 import { Redirect } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { TouchableOpacity, useWindowDimensions } from "react-native";
 import { useSession, useUserModel } from "../../pb";
 import { usePlatte } from "../../themes/usePlatte";
 import { elevationHiddenStyle } from "../../utils/elevationHiddenStyle";
@@ -9,7 +12,7 @@ import { View } from "tamagui";
 import { DrawerToggleButton } from "@react-navigation/drawer";
 import DrawerComponent from "../../components/drawer";
 import { usePouchSync } from "../../pouchdbs/custom-hooks";
-import { useWindowDimensions } from "react-native";
+import { clearMessages } from "../../zustand/chat";
 
 export default function TabLayout() {
   const { loggedIn, verified } = useSession();
@@ -66,6 +69,30 @@ export default function TabLayout() {
                 />
               </View>
             </Link>
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="chat"
+        options={{
+          title: "Chat",
+          drawerIcon: (props) => (
+            <FontAwesome6
+              name="wand-magic-sparkles"
+              size={21}
+              color={props.color}
+            />
+          ),
+          headerRight: (props) => (
+            <TouchableOpacity onPress={clearMessages}>
+              <View mr="$3">
+                <MaterialCommunityIcons
+                  name="reload"
+                  size={24}
+                  color={props.tintColor}
+                />
+              </View>
+            </TouchableOpacity>
           ),
         }}
       />
