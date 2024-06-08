@@ -7,13 +7,20 @@ import NoteItem from "../components/noteItem";
 import { useSearchStore } from "../zustand/search";
 import { useQuery } from "@tanstack/react-query";
 import pb from "../pb";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 type AIResult = {
   id: string;
   title: string;
   text: string;
 }[];
+
+type MergedAIResult = {
+  id: string;
+  title: string;
+  texts: string[];
+}[];
+
 export default function SearchDemo() {
   const searchKey = useSearchStore((state) => state.searchKey);
   const { docs } = useFind<{ title: string }>({
@@ -50,6 +57,23 @@ export default function SearchDemo() {
     staleTime: 10000,
   });
 
+  const mergedAIresp = useMemo(() => {
+    // merge the AI results (based on the same note id)
+    if (useAI && data) {
+      const merged: MergedAIResult = [];
+      data.forEach((item) => {
+        const existing = merged.find((m) => m.id === item.id);
+        if (existing) {
+          existing.texts.push(item.text);
+        } else {
+          merged.push({ id: item.id, title: item.title, texts: [item.text] });
+        }
+      });
+      return merged;
+    }
+    return [];
+  }, [useAI, data]);
+
   useEffect(() => {
     if (useAI) {
       pb.send("ai/refresh", {
@@ -81,11 +105,12 @@ export default function SearchDemo() {
         />
       ) : (
         <FlatList
-          data={data}
+          data={mergedAIresp}
+          keyExtractor={(item, index) => item.id + index}
           ItemSeparatorComponent={() => <Separator />}
           renderItem={({ item, index }) => (
             <Animated.View entering={FadeIn.delay(30 * index)}>
-              <NoteItem {...{ ...item, _id: item.id }} showDetail />
+              <NoteItem {...{ ...item, _id: item.id, texts: item.texts }} showDetail />
             </Animated.View>
           )}
         />

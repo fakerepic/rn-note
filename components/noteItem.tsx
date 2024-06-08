@@ -9,7 +9,7 @@ import { Link } from "expo-router";
 type Props = {
   _id: string;
   title: string;
-  text?: string;
+  texts?: string[];
   showDetail?: boolean;
 };
 
@@ -24,34 +24,37 @@ const NoteItem = (props: Props) => {
         params: { doc: props._id as string },
       }}
     >
-      <View bg="$color2">
-        <ListItem>
-          <ListItem.Text>
-            <H5 selectable={false}>{props.title}</H5>
-          </ListItem.Text>
-          <TouchableOpacity
-            onPress={() => {
-              setDocID(props._id);
-              SheetGroup.open("noteDetailAllowDel");
-            }}
-          >
-            <MaterialCommunityIcons
-              name="dots-horizontal"
-              size={16}
-              color={$text}
-            />
-          </TouchableOpacity>
-        </ListItem>
-        {props.showDetail && (
-          <View mx="$4" mb="$4" p="$4" br="$4" bg="$color3">
-            <Paragraph color="$color7">
-              {props.text && props.text?.length < 50
-                ? props.text
-                : props.text?.slice(0, 50) + " ..."}
-            </Paragraph>
-          </View>
-        )}
-      </View>
+      <TouchableOpacity>
+        <View bg="$color2">
+          <ListItem>
+            <ListItem.Text>
+              <H5 selectable={false}>{props.title}</H5>
+            </ListItem.Text>
+            <TouchableOpacity
+              onPress={() => {
+                setDocID(props._id);
+                SheetGroup.open("noteDetail");
+              }}
+            >
+              <MaterialCommunityIcons
+                name="dots-horizontal"
+                size={16}
+                color={$text}
+              />
+            </TouchableOpacity>
+          </ListItem>
+          {props.showDetail &&
+            props.texts?.map((text, i) => (
+              <View key={i} mx="$4" mb="$4" p="$4" br="$4" bg="$color3">
+                <Paragraph color="$color7" selectable={false}>
+                  {text && text?.length < 75
+                    ? text
+                    : text?.slice(0, 75) + " ..."}
+                </Paragraph>
+              </View>
+            ))}
+        </View>
+      </TouchableOpacity>
     </Link>
   );
 };

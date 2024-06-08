@@ -113,7 +113,22 @@ export function CreateNoteBookWidget() {
       }}
       mb="$20"
     >
-      <XStack gap="$2" animation="quick" enterStyle={{ opacity: 0 }}>
+      <XStack gap="$2" animation="quick" fd="row-reverse" enterStyle={{ opacity: 0 }}>
+        <Button
+          br="$4"
+          icon={(props: any) => (
+            <Ionicons {...props} name="close" color={$text} />
+          )}
+          onPress={() => setIsCreating(false)}
+        />
+        <Form.Trigger asChild>
+          <Button
+            br="$4"
+            icon={(props: any) => (
+              <Ionicons {...props} name="add" color={$text} />
+            )}
+          />
+        </Form.Trigger>
         <BottomSheetTextInput
           placeholder="Notebook title"
           placeholderTextColor={$activecolor}
@@ -127,21 +142,6 @@ export function CreateNoteBookWidget() {
             color: $text,
             borderColor: $activecolor,
           }}
-        />
-        <Form.Trigger asChild>
-          <Button
-            br="$4"
-            icon={(props: any) => (
-              <Ionicons {...props} name="add" color={$text} />
-            )}
-          />
-        </Form.Trigger>
-        <Button
-          br="$4"
-          icon={(props: any) => (
-            <Ionicons {...props} name="close" color={$text} />
-          )}
-          onPress={() => setIsCreating(false)}
         />
       </XStack>
     </Form>
