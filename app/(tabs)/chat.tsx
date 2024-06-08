@@ -71,14 +71,14 @@ export default function ChatWithNote() {
 
   return (
     <View f={1} bg="$background" jc="center">
-      {!messages.length && !loading && <ChatWelcome />}
+      {messages.length === 0 && <ChatWelcome refreshing={loading} />}
       <FlatList
         inverted
         data={messages_reversed}
         keyExtractor={(_item, index) => messages.length - index + ""}
         renderItem={ChatMessage}
       />
-      {loading && <ChatLoadingIndicator />}
+      {messages.length > 0 && loading && <ChatLoadingIndicator />}
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? top + 45 - bottom : 0}
@@ -92,15 +92,21 @@ export default function ChatWithNote() {
   );
 }
 
-const ChatWelcome = () => (
+const ChatWelcome = (props: { refreshing: boolean }) => (
   <View fg={1} jc="flex-end" ai="center">
-    <Text color="$color6" mb="$4">
-      <FontAwesome6 name="wand-magic-sparkles" size={32} />
-    </Text>
-    <Text color="$color6">Ask me anything about your notes...</Text>
+    {!props.refreshing ? (
+      <View animation="slow" ai="center" enterStyle={{ o: 0 }}>
+        <Text color="$color6" mb="$4">
+          <FontAwesome6 name="wand-magic-sparkles" size={32} />
+        </Text>
+        <Text color="$color6">Ask me anything about your notes...</Text>
+      </View>
+    ) : (
+      <Spinner size="large" color="$color6" />
+    )}
   </View>
 );
 
 const ChatLoadingIndicator = () => (
-  <Spinner fg={1} jc="flex-start" color="$color6" my="$4" />
+  <Spinner jc="center" color="$color6" my="$4" />
 );
