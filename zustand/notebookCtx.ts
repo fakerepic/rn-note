@@ -39,3 +39,4 @@ const Store = create<Context & Action>()(
 );
 
 export const useNotebookContext = Store;
+export const cleanNotebookContext = () => Store.setState(initialState);

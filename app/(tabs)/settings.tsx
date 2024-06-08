@@ -23,6 +23,7 @@ import {
   AvailableTamaguiColors,
   useColorStore,
 } from "../../zustand/color";
+import { cleanNotebookContext } from "../../zustand/notebookCtx";
 
 export default function TabTwoScreen() {
   const { refetch, isLoading } = useAuthRefresh();
@@ -50,7 +51,10 @@ export default function TabTwoScreen() {
           br="$4"
           theme="red"
           title="Sign out"
-          onPress={logout}
+          onPress={() => {
+            logout()
+            cleanNotebookContext()
+          }}
           icon={<Ionicons name="log-out" size={16} />}
         ></ListItem>
       </View>
