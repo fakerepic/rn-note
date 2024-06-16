@@ -2,10 +2,11 @@ import { Input as TextInput, TextArea, Spinner, H2, Text } from "tamagui";
 import { useForm, Controller } from "react-hook-form";
 import { FormState } from "../utils/FormStateRuducer";
 import pb, { useSession } from "../pb";
-import { Redirect } from "expo-router";
+import { Redirect, router } from "expo-router";
 
 import { View, H3, Button, XStack } from "tamagui";
 import React, { useEffect } from "react";
+import { TouchableOpacity } from "react-native";
 
 export default function UnLogged() {
   const { loggedIn, verified } = useSession();
@@ -91,30 +92,37 @@ function SignInOrSignUp() {
       <FormState control={control}>
         {(formState) => (
           <>
-            <XStack gap="$4">
-              <Button
-                icon={formState.isSubmitting ? <Spinner /> : undefined}
-                onPress={onPress}
-                animation="medium"
-                animateOnly={["opacity"]}
-                disabledStyle={{ opacity: 0.3 }}
-                disabled={!formState.isValid || formState.isSubmitting}
-                chromeless
-                w="$10"
-              >
-                sign in
-              </Button>
-              <Button
-                onPress={register}
-                animation="medium"
-                animateOnly={["opacity"]}
-                disabledStyle={{ opacity: 0.3 }}
-                disabled={!formState.isValid || formState.isSubmitting}
-                chromeless
-                w="$10"
-              >
-                sign up
-              </Button>
+            <XStack jc="space-between" w="80%" maw="$20" ai="center">
+              <XStack gap="$2" fg={1} ai="center">
+                <Button
+                  icon={formState.isSubmitting ? <Spinner /> : undefined}
+                  onPress={onPress}
+                  animation="quick"
+                  animateOnly={["opacity"]}
+                  disabledStyle={{ opacity: 0.3 }}
+                  disabled={!formState.isValid || formState.isSubmitting}
+                  bw={0}
+                  br="$8"
+                >
+                  sign in
+                </Button>
+                <Button
+                  onPress={register}
+                  animation="quick"
+                  animateOnly={["opacity"]}
+                  disabledStyle={{ opacity: 0.3 }}
+                  disabled={!formState.isValid || formState.isSubmitting}
+                  bw={0}
+                  br="$8"
+                >
+                  sign up
+                </Button>
+              </XStack>
+              <TouchableOpacity onPress={() => router.navigate("/reset")}>
+                <Text fs={1} mx="$1">
+                  reset
+                </Text>
+              </TouchableOpacity>
             </XStack>
 
             {formState.isSubmitSuccessful && (
