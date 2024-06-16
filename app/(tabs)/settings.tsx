@@ -16,7 +16,7 @@ import * as ImagePicker from "expo-image-picker";
 
 import pb, { logout, useAuthRefresh, useUserModel } from "../../pb";
 import { useEffect, useMemo, useState } from "react";
-import { RefreshControl, useColorScheme } from "react-native";
+import { RefreshControl, TouchableOpacity, useColorScheme } from "react-native";
 import { FlatList } from "react-native";
 import {
   AvailableSystemColors,
@@ -24,9 +24,11 @@ import {
   useColorStore,
 } from "../../zustand/color";
 import { zustandCleanup } from "../../zustand";
+import { useCleanUnusedBase64 } from "../../pouchdbs/attachment";
 
 export default function TabTwoScreen() {
   const { refetch, isLoading } = useAuthRefresh();
+  const { cleanup, isCleaning } = useCleanUnusedBase64();
   return (
     <ScrollView
       bg="$background"
@@ -47,16 +49,28 @@ export default function TabTwoScreen() {
         <Label>System Color</Label>
         <SystemColorSwitcher />
         <H4 mt="$4">App Control</H4>
-        <ListItem
-          br="$4"
-          theme="red"
-          title="Sign out"
+        <TouchableOpacity onPress={() => !isCleaning && cleanup()}>
+          <ListItem
+            br="$4"
+            title="Clean unused attachments"
+            animation="quick"
+            o={isCleaning ? 0.5 : 1}
+            icon={<MaterialIcons name="cleaning-services" size={16} />}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
           onPress={() => {
             logout();
             zustandCleanup();
           }}
-          icon={<Ionicons name="log-out" size={16} />}
-        ></ListItem>
+        >
+          <ListItem
+            br="$4"
+            theme="red"
+            title="Sign out"
+            icon={<Ionicons name="log-out" size={16} />}
+          />
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -80,17 +94,18 @@ function SystemColorSwitcher() {
       horizontal
       renderItem={({ item }) => {
         return (
-          <ListItem
-            br="$8"
-            w="auto"
-            h="$4"
-            mx="$2"
-            themeInverse={inverse(item)}
-            bc={item === systemColor ? "$color8" : "$background"}
-            borderWidth={1}
-            title={item}
-            onPress={() => setTheme(item)}
-          />
+          <TouchableOpacity onPress={() => setTheme(item)}>
+            <ListItem
+              br="$8"
+              w="auto"
+              h="$4"
+              mx="$2"
+              themeInverse={inverse(item)}
+              bc={item === systemColor ? "$color8" : "$background"}
+              borderWidth={1}
+              title={item}
+            />
+          </TouchableOpacity>
         );
       }}
     />
@@ -106,18 +121,19 @@ function TamaguiColorSwitcher() {
       horizontal
       renderItem={({ item }) => {
         return (
-          <Theme name={item}>
-            <ListItem
-              circular
-              h="$4"
-              w="$4"
-              mx="$1"
-              bg="$color4"
-              bc={item === tamaguiColor ? "$color8" : "$background"}
-              borderWidth={1}
-              onPress={() => setTheme(item)}
-            />
-          </Theme>
+          <TouchableOpacity onPress={() => setTheme(item)}>
+            <Theme name={item}>
+              <ListItem
+                circular
+                h="$4"
+                w="$4"
+                mx="$1"
+                bg="$color4"
+                bc={item === tamaguiColor ? "$color8" : "$background"}
+                borderWidth={1}
+              />
+            </Theme>
+          </TouchableOpacity>
         );
       }}
     />

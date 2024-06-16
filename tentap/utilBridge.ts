@@ -2,7 +2,9 @@
  * @module A bridge extension for the editor that provides utility functions.
  */
 import { BridgeExtension } from "@10play/tentap-editor";
+import { Editor } from "@tiptap/core";
 import { history } from "@tiptap/pm/history";
+import { asyncMessages } from "./AsyncMessages";
 
 type UtilEditorState = {};
 
@@ -12,6 +14,7 @@ type UtilEditorInstance = {
   // method is that this method does not emit the `update` event so that the
   // content is not saved to the undo stack.)
   initContent: (content: string) => void;
+  getResIDs: () => Promise<string[]>;
 };
 
 declare module "@10play/tentap-editor" {
@@ -21,6 +24,8 @@ declare module "@10play/tentap-editor" {
 
 export enum UtilEditorActionType {
   InitContent = "init-content",
+  GetRes = "get-res",
+  GetResBack = "get-res-back",
 }
 
 type UtilMessage = {
@@ -40,9 +45,27 @@ export const UtilBridge = new BridgeExtension<
       editor.registerPlugin(history());
       return true;
     }
+    if (message.type === UtilEditorActionType.GetRes) {
+      sendMessageBack({
+        type: UtilEditorActionType.GetResBack,
+        payload: {
+          content: _getResIDs(editor),
+          messageId: message.payload.messageId,
+        },
+      });
+    }
+
     return false;
   },
   onEditorMessage(message, _editorBridge) {
+    if (message.type === UtilEditorActionType.GetResBack) {
+      asyncMessages.onMessage(
+        message.payload.messageId,
+        message.payload.content,
+      );
+      return true;
+    }
+
     return false;
   },
   extendEditorInstance: (sendBridgeMessage) => {
@@ -53,9 +76,31 @@ export const UtilBridge = new BridgeExtension<
           payload,
         });
       },
+      getResIDs: async () => {
+        const res = await asyncMessages.sendAsyncMessage<object>(
+          {
+            type: UtilEditorActionType.GetRes,
+          },
+          sendBridgeMessage,
+        );
+        return res as any;
+      },
     };
   },
   extendEditorState: (editor) => {
     return {};
   },
 });
+
+function _getResIDs(editor: Editor) {
+  const resIDs: string[] = [];
+
+  editor.state.doc.descendants((node, _) => {
+    if (node.type.name === "myimage" || node.type.name === "audio") {
+      const { id } = node.attrs;
+      resIDs.push(id);
+    }
+  });
+
+  return resIDs;
+}

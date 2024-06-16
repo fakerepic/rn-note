@@ -1,10 +1,12 @@
 import { useCallback, useEffect } from "react";
 import { useFind, usePouch } from "use-pouchdb";
 
-import { remotedb } from ".";
+import { remoteattachmentdb, remotedb } from ".";
+import { useAttachmentPouch } from "./attachment";
 
 export function usePouchSync(shouldDisable?: boolean) {
   const localDb = usePouch();
+  const attachmentDb = useAttachmentPouch();
 
   useEffect(() => {
     if (!shouldDisable) {
@@ -12,12 +14,17 @@ export function usePouchSync(shouldDisable?: boolean) {
         live: true,
         retry: true,
       });
+      const attachmentSyncHandler = attachmentDb.sync(remoteattachmentdb, {
+        live: true,
+        retry: true,
+      });
 
       return () => {
         syncHandler.cancel();
+        attachmentSyncHandler.cancel();
       };
     }
-  }, [localDb, shouldDisable]);
+  }, [attachmentDb, localDb, shouldDisable]);
 }
 
 export function usePouchDelete(errorCallback?: (e: any) => void) {
@@ -38,8 +45,8 @@ export function usePouchDelete(errorCallback?: (e: any) => void) {
   );
 }
 
-export function useNoteEntries(notebookID? :string) {
-  return useFind<{ title: string, updateAt: number, createAt:number }>({
+export function useNoteEntries(notebookID?: string) {
+  return useFind<{ title: string; updateAt: number; createAt: number }>({
     index: {
       fields: ["_id", "type"],
       ddoc: "main-index",
@@ -65,5 +72,4 @@ export function useNoteBooks() {
     },
     fields: ["_id", "title", "createAt"],
   });
-
 }

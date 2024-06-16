@@ -17,6 +17,8 @@ import { useNavigationTheme } from "../themes/useNavigationTheme";
 import { useColorStore } from "../zustand/color";
 import { EditorHeader } from "../components/editorHeader";
 import { SearchHeader } from "../components/searchHeader";
+import { VoiceProvider } from "../components/voiceProvider";
+import { VideoQueueProvider } from "../components/videoQueueProvider";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -55,9 +57,13 @@ export default function RootLayout() {
       <CustomTamaguiProvider>
         <CustomThemeProvider>
           <PouchProvider>
-            <GestureHandlerRootView style={{ flex: 1 }}>
-              <RootLayoutNav />
-            </GestureHandlerRootView>
+            <VoiceProvider>
+              <VideoQueueProvider>
+                <GestureHandlerRootView style={{ flex: 1 }}>
+                  <RootLayoutNav />
+                </GestureHandlerRootView>
+              </VideoQueueProvider>
+            </VoiceProvider>
           </PouchProvider>
         </CustomThemeProvider>
       </CustomTamaguiProvider>
@@ -73,6 +79,7 @@ function RootLayoutNav() {
         options={{ headerShown: false, headerBlurEffect: "regular" }}
       />
       <Stack.Screen name="unlogged" options={{ headerShown: false }} />
+      <Stack.Screen name="reset" options={{ headerShown: false }} />
       <Stack.Screen
         name="edit"
         options={{

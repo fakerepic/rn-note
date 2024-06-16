@@ -19,6 +19,8 @@ import { View, useTheme } from "tamagui";
 
 import { editorHtml } from "../tentap/editor-web/build/editorHtml";
 import { DynamicMyImageCSS, MyImageBridge } from "../tentap/myImageBridge";
+import { AudioBridge, DynamicAudioCSS } from "../tentap/audioBridge";
+import { DynamicVideoCSS, VideoBridge } from "../tentap/videoBridge";
 import { UtilBridge } from "../tentap/utilBridge";
 import { Toolbar, DEFAULT_TOOLBAR_ITEMS, customToolbars } from "./toolbar";
 
@@ -97,7 +99,10 @@ export function useThemedEditorInstance(props: ThemeEditorProps = {}) {
     border-left: 3px solid ${$quote};
     padding-left: 1rem;
   }
-` + DynamicMyImageCSS({ $quote }),
+` +
+      DynamicMyImageCSS({ $quote }) +
+      DynamicAudioCSS({ $quote, $toolbar, $text }) +
+      DynamicVideoCSS({ $quote, $toolbar, $text }),
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [colorScheme, theme],
@@ -108,6 +113,8 @@ export function useThemedEditorInstance(props: ThemeEditorProps = {}) {
     bridgeExtensions: [
       ...TenTapStartKit,
       MyImageBridge,
+      AudioBridge,
+      VideoBridge,
       UtilBridge,
       PlaceholderBridge.configureExtension({
         showOnlyCurrent: false,

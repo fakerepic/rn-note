@@ -4,7 +4,7 @@ import {
   BottomSheetBackdropProps,
   BottomSheetModal,
 } from "@gorhom/bottom-sheet";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { BottomSheetsRef } from "./ref";
 import { usePlatte } from "../../themes/usePlatte";
 import { NoteDetailSheet } from "./noteDetail";
@@ -19,6 +19,8 @@ import {
   useNavigation,
 } from "expo-router";
 import { InteractionManager, Keyboard } from "react-native";
+import { RecordingSheet } from "./recording";
+import { AlertSheet } from "./alert";
 
 const SheetMap = {
   addAttachmnt: (p: any) => <AddAttachmentSheet {...p} />,
@@ -27,6 +29,8 @@ const SheetMap = {
   moveNote: (p: any) => <MoveToNotebookSheet {...p} />,
   notebookDetail: (p: string) => <NotebookDetailSheet notebookID={p} />,
   newNotebook: (p: any) => <NewNotebookSheet {...p} />,
+  recording: (p: any) => <RecordingSheet {...p} />,
+  alert: (p: string) => <AlertSheet message={p} />,
 };
 
 export class SheetGroup {
@@ -62,9 +66,14 @@ export function BottomSheetGroup() {
 
   // Perform animation of the sheet closing before navigating back.
   const navigation = useNavigation();
+  const [fired, setFire] = useState(false);
   useFocusEffect(() =>
     navigation.addListener("beforeRemove", (e) => {
       e.preventDefault();
+      if (fired) {
+        return;
+      }
+      setFire(true);
       ref.current?.dismiss();
       setTimeout(() => {
         navigation.dispatch(e.data.action);
@@ -89,6 +98,7 @@ export function BottomSheetGroup() {
         stackBehavior="push"
         backgroundStyle={{ backgroundColor: $toolbar }}
         handleIndicatorStyle={{ backgroundColor: $text, opacity: 0.5 }}
+        enableHandlePanningGesture={false}
         backdropComponent={renderBackdrop}
         ref={ref}
         enableDynamicSizing

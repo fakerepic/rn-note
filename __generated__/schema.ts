@@ -158,11 +158,47 @@ export interface UsersCollection {
 	response: UsersResponse;
 	create: UsersCreate;
 	update: UsersUpdate;
-	relations: Record<string, never>;
+	relations: {
+		'videos(owner)': VideosCollection[];
+	};
+}
+
+// ===== videos =====
+
+export interface VideosResponse extends BaseCollectionResponse {
+	collectionName: 'videos';
+	video: string;
+	owner: string;
+	id_local: string;
+}
+
+export interface VideosCreate extends BaseCollectionCreate {
+	video?: File | null;
+	owner?: string;
+	id_local?: string;
+}
+
+export interface VideosUpdate extends BaseCollectionUpdate {
+	video?: File | null;
+	owner?: string;
+	id_local?: string;
+}
+
+export interface VideosCollection {
+	type: 'base';
+	collectionId: string;
+	collectionName: 'videos';
+	response: VideosResponse;
+	create: VideosCreate;
+	update: VideosUpdate;
+	relations: {
+		owner: UsersCollection;
+	};
 }
 
 // ===== Schema =====
 
 export type Schema = {
 	users: UsersCollection;
+	videos: VideosCollection;
 };

@@ -40,7 +40,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "The app want to access your photos."
+          "photosPermission": "The app want to access your photos.",
+          "cameraPermission": "The app want to access your camera."
         }
       ],
       [

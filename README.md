@@ -8,7 +8,7 @@ Notes app built with react native, currently available for both ios and android.
 - [x] offline first
 - [x] rich text support
 - [x] dark mode
-- [ ] attachment support
+- [x] attachment support
 - [x] orgnization method
 - [x] full-text search
 - [x] ai-powered search

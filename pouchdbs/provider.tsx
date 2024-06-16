@@ -16,6 +16,14 @@ export default function AutoPouchProvider(props: {
 }) {
   const id = useAuthStore((state) => state.model?.id as string);
   const db = useMemo(() => openLocalPouchDB(id), [id]);
+  const db_for_attachment = useMemo(() => openLocalPouchDB(`A_${id}`), [id]);
 
-  return <Provider pouchdb={db}>{props.children}</Provider>;
+  return (
+    <Provider
+      databases={{ note: db, attachment: db_for_attachment }}
+      default="note"
+    >
+      {props.children}
+    </Provider>
+  );
 }

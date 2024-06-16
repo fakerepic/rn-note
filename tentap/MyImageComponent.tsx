@@ -1,5 +1,6 @@
 import { NodeViewWrapper, NodeViewProps } from "@tiptap/react";
 import React, { useEffect, useState } from "react";
+import { autoCreateParagraph } from "./autoCreateParagraph";
 
 interface UnknownProps {
   [x: string]: any;
@@ -10,8 +11,15 @@ interface UnknownProps {
  * It is rendered in webview
  */
 export const MyImageComponent = (props: UnknownProps & NodeViewProps) => {
-  const { editor, extension, node, backgroundColor, deleteNode, ...restProps } =
-    props;
+  const {
+    editor,
+    extension,
+    node,
+    backgroundColor,
+    deleteNode,
+    getPos,
+    ...restProps
+  } = props;
   const { id, show } = node.attrs;
   const [inited, setInited] = useState<boolean>(false);
 
@@ -20,7 +28,11 @@ export const MyImageComponent = (props: UnknownProps & NodeViewProps) => {
   if (editor && node) {
     return (
       <NodeViewWrapper>
-        <div className="myimage" data-drag-handle>
+        <div
+          className="myimage"
+          data-drag-handle
+          onClick={(e) => autoCreateParagraph(editor, getPos())}
+        >
           {inited ? (
             <img
               className="myimage-img"

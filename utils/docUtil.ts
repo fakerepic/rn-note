@@ -24,6 +24,7 @@ export const save_or_create = async (
     updateAt: number;
     createAt: number;
     notebookID?: string;
+    resIDs?: string[];
   }>,
   editor: EditorBridge,
   docID?: string,
@@ -47,6 +48,7 @@ export const save_or_create = async (
           content: res,
           type: "note",
           updateAt: Date.now(),
+          resIDs: await editor.getResIDs(),
         });
         console.debug("save");
       }
@@ -60,6 +62,7 @@ export const save_or_create = async (
         createAt: Date.now(),
         updateAt: Date.now(),
         notebookID,
+        resIDs: await editor.getResIDs(),
       });
       console.debug("create");
     }
